@@ -55,7 +55,8 @@
   .opt small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
   .opt b { display: block; font-size: 18px; font-weight: 800; } .opt i { font-style: normal; font-size: 11.5px; color: var(--mute); }
   .opt[aria-pressed=true] { border-color: var(--gold); background: #fbf3e8; box-shadow: 0 0 0 2px var(--gold) inset; }
-  .paybox { margin-top: 12px; } .pay-h { font-weight: 800; font-size: 15px; margin-bottom: 8px; }
+  .pays { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .pays .opt { padding: 12px; } .pays .opt b { font-size: 15.5px; } .pays .opt svg { display: block; margin-bottom: 6px; }
+  @media (max-width: 520px) { .pays { grid-template-columns: 1fr; } .pays .opt { display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; align-items: center; } .pays .opt svg { grid-row: 1 / span 2; margin: 0; } }
   .incl { font-size: 13px; color: var(--mute); margin: 12px 2px 0; }
   .share { display: none; margin-top: 12px; } .share.on { display: block; }
   .prods { display: grid; gap: 10px; }
@@ -87,7 +88,7 @@
   <div class="wrap">
     <div class="kick" id="kick">A thank you from us</div>
     <h1>Before you go. <span>Your next chapter.</span></h1>
-    <p class="lead">Book your next experience while you are still here, and take home a few of the things that helped this week. No payment today: choose how you would like to pay and we will send your booking link.</p>
+    <p class="lead">Book your next experience while you are still here, and take home a few of the things that helped this week. Nothing is charged today: choose how you would like to pay and we will send your invoice.</p>
   </div>
 </header>
 
@@ -128,6 +129,12 @@
         </div>
         <label class="f" style="margin-bottom:0">Anything you would like to ask us <span class="otag">(optional)</span><textarea id="notes"></textarea></label>
       </div>
+    </section>
+    <section id="paySec">
+      <h2><small>Last step</small>How would you like to pay?</h2>
+      <p class="note">Nothing is charged today. We will send your invoice with the details for the option you choose.</p>
+      <div class="pays" id="pays"></div>
+      <p class="incl" id="planTxt"></p>
     </section>
   </div>
 
@@ -187,7 +194,7 @@
   RETREATS.concat([{ id: '', name: 'Not right now', short: 'Just the items' }]).forEach((r) => {
     const b = mk('button', 'tab' + (r.id ? '' : ' none')); b.type = 'button'; b.dataset.id = r.id; const im = mk('div', 'im', r.id ? '' : 'Maybe later'); if (r.img) im.style.backgroundImage = 'url("' + r.img + '")';
     const tx = mk('div', 'tx'); tx.append(mk('b', null, r.name), mk('span', null, r.short)); b.append(im, tx);
-    b.onclick = () => { S.ret = r.id; S.room = ''; S.opt = ''; S.pay = ''; drawRet(); sum(); }; tabs.append(b);
+    b.onclick = () => { S.ret = r.id; S.room = ''; S.opt = ''; if (S.pay === 'plan') S.pay = ''; drawRet(); sum(); }; tabs.append(b);
   });
   function drawRet() {
     [...tabs.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === S.ret && (S.ret || S._none))));
@@ -201,14 +208,7 @@
       bd.append(op); c.append(bd); rl.append(c); });
     box.append(rl);
     const sh = mk('div', 'card share' + (S.opt === 'share' ? ' on' : '')); const l = mk('label', 'f'); l.style.marginBottom = '0'; l.append(document.createTextNode('Who are you sharing with? '), mk('span', 'otag', '(leave blank and we will pair you with another guest)')); const i = mk('input'); i.type = 'text'; i.id = 'share_with'; i.value = S.share || ''; i.oninput = () => { S.share = i.value; }; l.append(i); sh.append(l); box.append(sh);
-    if (S.opt) { const rm = R.rooms.find((x) => x.id === S.room), op = rm.opts.find((x) => x[0] === S.opt), pl = planOf(op[2]);
-      const pw_ = mk('div', 'card paybox'); pw_.append(mk('div', 'pay-h', 'How would you like to pay?')); const g = mk('div', 'opts');
-      const P1 = mk('button', 'opt'); P1.type = 'button'; P1.setAttribute('aria-pressed', String(S.pay === 'full')); P1.append(mk('small', null, 'Pay in full'), mk('b', null, 'AU' + money(op[2])), mk('i', null, 'one payment, per person'));
-      const P2 = mk('button', 'opt'); P2.type = 'button'; P2.setAttribute('aria-pressed', String(S.pay === 'plan')); P2.append(mk('small', null, 'Payment plan'), mk('b', null, money(pl.upfront) + ' deposit'), mk('i', null, 'then ' + pl.n + ' × ' + cents(pl.each) + ' + $' + pl.fee + ' plan fee'));
-      P1.onclick = () => { S.pay = 'full'; drawRet(); sum(); }; P2.onclick = () => { S.pay = 'plan'; drawRet(); sum(); }; g.append(P1, P2); pw_.append(g);
-      if (S.pay === 'plan') pw_.append(mk('p', 'incl', money(pl.upfront) + ' to secure your place, then the balance of ' + cents(op[2] - pl.upfront) + ' in ' + pl.n + ' instalments of ' + cents(pl.each) + ', plus a one-off $' + pl.fee + ' payment plan fee. Total ' + money(pl.total) + ' per person.'));
-      box.append(pw_); }
-    box.append(mk('p', 'incl', 'All rooms include the same complete experience. Prices are per person. We will confirm availability and send your booking link.'));
+    box.append(mk('p', 'incl', 'All rooms include the same complete experience. Prices are per person. We will confirm availability and send your invoice.'));
   }
   tabs.lastChild.onclick = () => { S.ret = ''; S.room = ''; S.opt = ''; S._none = true; drawRet(); sum(); };
 
@@ -221,27 +221,41 @@
     if (p.sizes) { const s = document.createElement('select'); s.setAttribute('aria-label', 'T-shirt size'); [['', 'Choose a size']].concat(p.sizes.map((z) => [z, z])).forEach(([v, t]) => { const op = document.createElement('option'); op.value = v; op.textContent = t; s.append(op); }); s.onchange = () => { S.size[p.id] = s.value; }; c.append(s); }
     pw.append(c); });
 
+
+  // how they pay (James, 23 Oct 2026): card, bank transfer or the payment plan; we send an invoice either way
+  const PAYS = [['card', 'Credit card', 'We send a secure card payment link with your invoice', '<path d="M3 6.5h18v11H3z"/><path d="M3 10h18"/><path d="M6.5 14.5h4"/>'],
+    ['bank', 'Bank transfer', 'Our bank details are on your invoice', '<path d="M3 10l9-5 9 5"/><path d="M5 10v7M9.5 10v7M14.5 10v7M19 10v7"/><path d="M3 20h18"/>'],
+    ['plan', 'Payment plan', '', '<path d="M4 6h16v14H4z"/><path d="M4 10h16"/><path d="M8 4v4M16 4v4"/><path d="M8 14h2M12 14h2M8 17h2"/>']];
+  function drawPay() {
+    const P = picked(); const w = $('pays'); w.textContent = ''; const canPlan = !!P.op; if (!canPlan && S.pay === 'plan') S.pay = '';
+    PAYS.forEach(([k, l, d, ic]) => { if (k === 'plan' && !canPlan) return; const b = mk('button', 'opt'); b.type = 'button'; b.setAttribute('aria-pressed', String(S.pay === k));
+      const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('width', '24'); sv.setAttribute('height', '24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', '#8A6420'); sv.setAttribute('stroke-width', '1.7'); sv.setAttribute('stroke-linecap', 'round'); sv.setAttribute('stroke-linejoin', 'round'); sv.innerHTML = ic;
+      const pl = k === 'plan' ? planOf(P.op[2]) : null; b.append(sv, mk('b', null, l), mk('i', null, pl ? money(pl.upfront) + ' deposit, then ' + pl.n + ' × ' + cents(pl.each) : d));
+      b.onclick = () => { S.pay = k; drawPay(); sum(); }; w.append(b); });
+    const t = $('planTxt'); if (S.pay === 'plan' && P.op) { const pl = planOf(P.op[2]); t.textContent = 'Payment plan for your retreat: ' + money(pl.upfront) + ' deposit to secure your place, then the balance of ' + cents(P.op[2] - pl.upfront) + ' in ' + pl.n + ' instalments of ' + cents(pl.each) + ', plus a one-off $' + pl.fee + ' payment plan fee (total ' + money(pl.total) + ' per person).' + (P.items.length ? ' Your take-home items are paid by card or bank transfer on the same invoice.' : ''); } else t.textContent = '';
+    $('paySec').style.display = P.op || P.items.length ? '' : 'none';
+  }
   function picked() { const R = RETREATS.find((x) => x.id === S.ret); const rm = R && R.rooms.find((x) => x.id === S.room); const op = rm && rm.opts.find((x) => x[0] === S.opt); const items = PRODUCTS.filter((p) => S.qty[p.id] > 0).map((p) => ({ id: p.id, name: p.name, qty: S.qty[p.id], each: p.price, size: S.size[p.id] || '' })); return { R, rm, op, items, total: items.reduce((t, x) => t + x.qty * x.each, 0) }; }
-  function sum() { const P = picked(); const a = []; if (P.op) a.push(P.R.name.replace('®', '') + ', ' + P.rm.name); if (P.items.length) a.push(P.items.reduce((t, x) => t + x.qty, 0) + (P.items.reduce((t, x) => t + x.qty, 0) === 1 ? ' item' : ' items') + ', ' + money(P.total));
-    $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' pp, ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : S.pay === 'full' ? ', pay in full' : '') : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
+  function sum() { const P = picked(); if ($('pays')) { const _w = window._dp; if (!_w) { window._dp = 1; drawPay(); window._dp = 0; } } const a = []; if (P.op) a.push(P.R.name.replace('®', '') + ', ' + P.rm.name); if (P.items.length) a.push(P.items.reduce((t, x) => t + x.qty, 0) + (P.items.reduce((t, x) => t + x.qty, 0) === 1 ? ' item' : ' items') + ', ' + money(P.total));
+    $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' pp, ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : S.pay === 'card' ? ', credit card' : S.pay === 'bank' ? ', bank transfer' : '') : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
 
   $('go').onclick = () => {
     const e = $('err'); e.classList.remove('on'); const P = picked(); const name = $('name').value.trim(), mob = $('mobile').value.trim(), em = $('email').value.trim();
     const fail = (t, el) => { e.textContent = t; e.classList.add('on'); if (el) el.focus(); };
     if (!name) return fail('Please add your name.', $('name')); if (!mob && !em) return fail('Please add your mobile or email so we can reach you.', $('mobile'));
     if (S.ret && !P.op) return fail('Please choose a room for ' + P.R.name + '.');
-    if (P.op && !S.pay) return fail('Please choose to pay in full or use the payment plan.');
+    if ((P.op || P.items.length) && !S.pay) { $('paySec').scrollIntoView({ behavior: 'smooth', block: 'start' }); return fail('Please choose how you would like to pay.'); }
     const ts = PRODUCTS.find((p) => p.sizes && S.qty[p.id] > 0 && !S.size[p.id]); if (ts) return fail('Please choose your ' + ts.name + ' size.');
     if (!P.op && !P.items.length && !$('ref_name').value.trim() && !$('notes').value.trim()) return fail('Choose a retreat, an item or leave us a note first.');
     const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); const parts = (FROM || 'unknown|0000-00-00').split('|');
-    const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '', pay: S.pay, plan: S.pay === 'plan' ? planOf(P.op[2]) : null } : null,
+    const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '', pay: S.pay, plan: S.pay === 'plan' ? planOf(P.op[2]) : null } : null, pay: S.pay,
       items: P.items, items_total: P.total, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
     const b = $('go'); b.disabled = true; b.textContent = 'Sending';
     const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
     fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
       $('form').hidden = true; document.querySelector('header').style.display = 'none'; const dn = $('done'); dn.classList.add('on'); window.scrollTo(0, 0);
-      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : ', paying in full') + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
-      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will be in touch with your booking link and payment details.' : 'We have your details and will be in touch soon.';
+      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : '') + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
+      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for the deposit, with your payment plan dates.' : '.') : 'We have your details and will be in touch soon.';
     }).catch(() => { b.disabled = false; b.textContent = 'Send'; fail('That did not send. Please check your connection and try again.'); });
   };
   sum();
