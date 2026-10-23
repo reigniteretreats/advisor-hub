@@ -137,7 +137,7 @@
     </section>
     <section id="paySec">
       <h2><small>Last step</small>How would you like to pay?</h2>
-      <p class="note">Nothing is charged today. We will send your invoice with the details for the option you choose.</p>
+      <p class="note">Nothing is charged today. We will send your invoice with the details for the option you choose. Your place and guest prices are held for 7 days from your invoice: to lock them in, we just need your payment (or deposit) within those 7 days.</p>
       <div class="pays" id="pays"></div>
       <p class="incl" id="planTxt"></p>
     </section>
@@ -268,7 +268,7 @@
       if (S.pay) { const pl = P.op && S.pay === 'plan' ? planOf(P.op[2]) : null; const R_ = [['Method', { card: 'Credit card', bank: 'Bank transfer', plan: 'Payment plan' }[S.pay]]]; if (pl) R_.push(['Deposit', money(pl.upfront)], ['Then', pl.n + ' × ' + cents(pl.each)], ['Plan fee', '$' + pl.fee], ['Total', money(pl.total) + ' per person', 'tot']); blk('How you would like to pay', R_); }
       const rf = $('ref_name').value.trim(); if (rf) blk('Your referral', [['Name', rf]].concat($('ref_mobile').value.trim() ? [['Mobile', $('ref_mobile').value.trim()]] : []));
       const nt = $('notes').value.trim(); if (nt) blk('Your question', [['', nt, 'q']]);
-      $('doneNext').textContent = (P.op || P.items.length ? 'Nothing has been charged. We will be in touch shortly to confirm everything and send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for your deposit, with your payment plan dates.' : '.') : 'We will be in touch soon.') + (em ? ' A copy is on its way to ' + em + '.' : '');
+      $('doneNext').textContent = (P.op || P.items.length ? 'Nothing has been charged. We will be in touch shortly to confirm everything and send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for your deposit, with your payment plan dates.' : '.') + ' Your place and guest prices are held for 7 days from your invoice, so we just need your ' + (S.pay === 'plan' ? 'deposit' : 'payment') + ' within those 7 days.' : 'We will be in touch soon.') + (em ? ' A copy is on its way to ' + em + '.' : '');
     }).catch(() => { b.disabled = false; b.textContent = 'Send'; fail('That did not send. Please check your connection and try again.'); });
   };
   sum();
