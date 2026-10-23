@@ -15,8 +15,8 @@
   body { margin: 0; font-family: Raleway, system-ui, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.45; }
   img { display: block; max-width: 100%; }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
-  header.hero { position: relative; color: #fff; background: #1A1A1A center/cover; min-height: 300px; display: flex; align-items: flex-end; }
-  header.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,26,26,.25) 0%, rgba(26,26,26,.55) 45%, rgba(26,26,26,.94) 100%); }
+  header.hero { position: relative; color: #fff; background: #1A1A1A center 35% / cover; min-height: 470px; display: flex; align-items: flex-end; }
+  header.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,26,26,.15) 0%, rgba(26,26,26,.1) 30%, rgba(26,26,26,.75) 62%, rgba(26,26,26,.96) 100%); }
   header.hero .wrap { position: relative; padding-top: 28px; padding-bottom: 26px; width: 100%; }
   .logo { width: 46px; position: absolute; top: 18px; right: 16px; opacity: .95; }
   .kick { font-size: 11.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
@@ -55,6 +55,7 @@
   .opt small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
   .opt b { display: block; font-size: 18px; font-weight: 800; } .opt i { font-style: normal; font-size: 11.5px; color: var(--mute); }
   .opt[aria-pressed=true] { border-color: var(--gold); background: #fbf3e8; box-shadow: 0 0 0 2px var(--gold) inset; }
+  .paybox { margin-top: 12px; } .pay-h { font-weight: 800; font-size: 15px; margin-bottom: 8px; }
   .incl { font-size: 13px; color: var(--mute); margin: 12px 2px 0; }
   .share { display: none; margin-top: 12px; } .share.on { display: block; }
   .prods { display: grid; gap: 10px; }
@@ -81,11 +82,11 @@
 </head>
 <body>
 <header class="hero" id="hero">
-  <img class="logo" src="../assets/pdf/logo-white.png" alt="Reignite Retreats">
+  <img class="logo" id="logo" src="../assets/pdf/logo-white.png" alt="Reignite Retreats">
   <div class="wrap">
     <div class="kick" id="kick">A thank you from us</div>
     <h1>Before you go. <span>Your next chapter.</span></h1>
-    <p class="lead">Book your next experience while you are still here, and take home a few of the things that helped this week. No payment today: we will send your booking details and payment options after you leave.</p>
+    <p class="lead">Book your next experience while you are still here, and take home a few of the things that helped this week. No payment today: choose how you would like to pay and we will send your booking link.</p>
   </div>
 </header>
 
@@ -153,7 +154,7 @@
   const FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSdzeCZuBTGPiivO1RY1Wu71Kwfz4CPEV9hAmyb8sSe_ctPkig/formResponse';
   const IMG = '../assets/offer/';
   const RETREATS = [
-    { id: 'fv-noosa-2027-04', key: 'Noosa|2027-04-19', name: 'FitVenture® Noosa', when: '19 to 25 April 2027', short: '19 to 25 Apr 2027', img: '../assets/gx/fitventure.jpg', facts: [['Where', 'Noosa, Sunshine Coast']],
+    { id: 'fv-noosa-2027-04', key: 'Noosa|2027-04-19', name: 'FitVenture® Noosa', when: '19 to 25 April 2027', short: '19 to 25 Apr 2027', img: IMG + 'fitventure-hero.jpg', facts: [['Where', 'Noosa, Sunshine Coast']],
       rooms: [ { id: 'cottage', name: 'Twin Cottage', desc: 'Share a cottage with a friend or another guest.', opts: [['share', 'Twin share', 4997]] },
                { id: 'suite', name: 'Suite', desc: 'Your own suite for the week.', opts: [['private', 'Suite', 6497]] } ] },
     { id: 'fv-samui-2027-08', key: 'Koh Samui|2027-08-22', name: 'FitVenture® Koh Samui', when: '22 to 28 August 2027', short: '22 to 28 Aug 2027', img: '../assets/gx/koh-samui.jpg', facts: [['Starts', '2pm, Sun 22 Aug'], ['Finishes', '12pm, Sat 28 Aug']],
@@ -172,15 +173,20 @@
   const $ = (id) => document.getElementById(id);
   const mk = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
   const money = (n) => '$' + Number(n).toLocaleString('en-AU');
-  const S = { ret: '', room: '', opt: '', qty: {}, size: {} };
-  $('hero').style.backgroundImage = 'url("' + (/Noosa|Sunshine|F\d/i.test(FROM + CODE) ? '../assets/gx/fitventure.jpg' : '../assets/gx/koh-samui.jpg') + '")';
+  const S = { ret: '', room: '', opt: '', qty: {}, size: {}, pay: '' };
+  // payment plan (James, 23 Oct 2026): $1,500 upfront, the balance in 3 equal instalments, plus a $300 plan fee
+  const PLAN = { upfront: 1500, n: 3, fee: 300 };
+  const cents = (n) => '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const planOf = (price) => { const bal = price - PLAN.upfront; return { upfront: PLAN.upfront, each: Math.round(bal / PLAN.n * 100) / 100, n: PLAN.n, fee: PLAN.fee, total: price + PLAN.fee }; };
+  const FV = /Noosa|Sunshine|^F\d/i.test(FROM + ' ' + CODE) || /^F\d/.test(CODE);
+  $('hero').style.backgroundImage = 'url("' + (FV ? IMG + 'fitventure-hero.jpg' : '../assets/gx/koh-samui.jpg') + '")'; if (FV) { $('logo').src = IMG + 'f-logo-white.png'; $('logo').alt = 'FitVenture'; }
 
   // retreats
   const tabs = $('tabs');
   RETREATS.concat([{ id: '', name: 'Not right now', short: 'Just the items' }]).forEach((r) => {
     const b = mk('button', 'tab' + (r.id ? '' : ' none')); b.type = 'button'; b.dataset.id = r.id; const im = mk('div', 'im', r.id ? '' : 'Maybe later'); if (r.img) im.style.backgroundImage = 'url("' + r.img + '")';
     const tx = mk('div', 'tx'); tx.append(mk('b', null, r.name), mk('span', null, r.short)); b.append(im, tx);
-    b.onclick = () => { S.ret = r.id; S.room = ''; S.opt = ''; drawRet(); sum(); }; tabs.append(b);
+    b.onclick = () => { S.ret = r.id; S.room = ''; S.opt = ''; S.pay = ''; drawRet(); sum(); }; tabs.append(b);
   });
   function drawRet() {
     [...tabs.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === S.ret && (S.ret || S._none))));
@@ -190,11 +196,18 @@
     const rl = mk('div', 'rooms'); R.rooms.forEach((rm) => { const c = mk('div', 'room'); if (rm.img) { const ph = mk('div', 'ph'); ph.style.backgroundImage = 'url("' + IMG + rm.img + '")'; c.append(ph); }
       const bd = mk('div', 'bd'); bd.append(mk('h3', null, rm.name)); if (rm.sub) { const sb = mk('div', 'rsub', rm.sub); bd.append(sb); }
       bd.append(mk('p', null, rm.desc)); const op = mk('div', 'opts'); if (rm.opts.length === 1) op.style.gridTemplateColumns = '1fr';
-      rm.opts.forEach(([k, l, p]) => { const b = mk('button', 'opt'); b.type = 'button'; b.setAttribute('aria-pressed', String(S.room === rm.id && S.opt === k)); b.append(mk('small', null, l), mk('b', null, 'AU' + money(p)), mk('i', null, 'per person')); b.onclick = () => { S.room = rm.id; S.opt = k; drawRet(); sum(); }; op.append(b); });
+      rm.opts.forEach(([k, l, p]) => { const b = mk('button', 'opt'); b.type = 'button'; b.setAttribute('aria-pressed', String(S.room === rm.id && S.opt === k)); b.append(mk('small', null, l), mk('b', null, 'AU' + money(p)), mk('i', null, 'per person')); b.onclick = () => { S.room = rm.id; S.opt = k; drawRet(); sum(); setTimeout(() => { const pb = document.querySelector('.paybox'); if (pb && !S.pay) pb.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60); }; op.append(b); });
       bd.append(op); c.append(bd); rl.append(c); });
     box.append(rl);
     const sh = mk('div', 'card share' + (S.opt === 'share' ? ' on' : '')); const l = mk('label', 'f'); l.style.marginBottom = '0'; l.append(document.createTextNode('Who are you sharing with? '), mk('span', 'otag', '(leave blank and we will pair you with another guest)')); const i = mk('input'); i.type = 'text'; i.id = 'share_with'; i.value = S.share || ''; i.oninput = () => { S.share = i.value; }; l.append(i); sh.append(l); box.append(sh);
-    box.append(mk('p', 'incl', 'All rooms include the same complete experience. Prices are per person. We will confirm availability and send your payment options, including payment plans.'));
+    if (S.opt) { const rm = R.rooms.find((x) => x.id === S.room), op = rm.opts.find((x) => x[0] === S.opt), pl = planOf(op[2]);
+      const pw_ = mk('div', 'card paybox'); pw_.append(mk('div', 'pay-h', 'How would you like to pay?')); const g = mk('div', 'opts');
+      const P1 = mk('button', 'opt'); P1.type = 'button'; P1.setAttribute('aria-pressed', String(S.pay === 'full')); P1.append(mk('small', null, 'Pay in full'), mk('b', null, 'AU' + money(op[2])), mk('i', null, 'one payment, per person'));
+      const P2 = mk('button', 'opt'); P2.type = 'button'; P2.setAttribute('aria-pressed', String(S.pay === 'plan')); P2.append(mk('small', null, 'Payment plan'), mk('b', null, money(pl.upfront) + ' deposit'), mk('i', null, 'then ' + pl.n + ' × ' + cents(pl.each) + ' + $' + pl.fee + ' plan fee'));
+      P1.onclick = () => { S.pay = 'full'; drawRet(); sum(); }; P2.onclick = () => { S.pay = 'plan'; drawRet(); sum(); }; g.append(P1, P2); pw_.append(g);
+      if (S.pay === 'plan') pw_.append(mk('p', 'incl', money(pl.upfront) + ' to secure your place, then the balance of ' + cents(op[2] - pl.upfront) + ' in ' + pl.n + ' instalments of ' + cents(pl.each) + ', plus a one-off $' + pl.fee + ' payment plan fee. Total ' + money(pl.total) + ' per person.'));
+      box.append(pw_); }
+    box.append(mk('p', 'incl', 'All rooms include the same complete experience. Prices are per person. We will confirm availability and send your booking link.'));
   }
   tabs.lastChild.onclick = () => { S.ret = ''; S.room = ''; S.opt = ''; S._none = true; drawRet(); sum(); };
 
@@ -209,24 +222,25 @@
 
   function picked() { const R = RETREATS.find((x) => x.id === S.ret); const rm = R && R.rooms.find((x) => x.id === S.room); const op = rm && rm.opts.find((x) => x[0] === S.opt); const items = PRODUCTS.filter((p) => S.qty[p.id] > 0).map((p) => ({ id: p.id, name: p.name, qty: S.qty[p.id], each: p.price, size: S.size[p.id] || '' })); return { R, rm, op, items, total: items.reduce((t, x) => t + x.qty * x.each, 0) }; }
   function sum() { const P = picked(); const a = []; if (P.op) a.push(P.R.name.replace('®', '') + ', ' + P.rm.name); if (P.items.length) a.push(P.items.reduce((t, x) => t + x.qty, 0) + (P.items.reduce((t, x) => t + x.qty, 0) === 1 ? ' item' : ' items') + ', ' + money(P.total));
-    $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' per person, ' + P.op[1].toLowerCase() : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
+    $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' pp, ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : S.pay === 'full' ? ', pay in full' : '') : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
 
   $('go').onclick = () => {
     const e = $('err'); e.classList.remove('on'); const P = picked(); const name = $('name').value.trim(), mob = $('mobile').value.trim(), em = $('email').value.trim();
     const fail = (t, el) => { e.textContent = t; e.classList.add('on'); if (el) el.focus(); };
     if (!name) return fail('Please add your name.', $('name')); if (!mob && !em) return fail('Please add your mobile or email so we can reach you.', $('mobile'));
     if (S.ret && !P.op) return fail('Please choose a room for ' + P.R.name + '.');
+    if (P.op && !S.pay) return fail('Please choose to pay in full or use the payment plan.');
     const ts = PRODUCTS.find((p) => p.sizes && S.qty[p.id] > 0 && !S.size[p.id]); if (ts) return fail('Please choose your ' + ts.name + ' size.');
     if (!P.op && !P.items.length && !$('ref_name').value.trim() && !$('notes').value.trim()) return fail('Choose a retreat, an item or leave us a note first.');
     const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); const parts = (FROM || 'unknown|0000-00-00').split('|');
-    const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '' } : null,
+    const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '', pay: S.pay, plan: S.pay === 'plan' ? planOf(P.op[2]) : null } : null,
       items: P.items, items_total: P.total, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
     const b = $('go'); b.disabled = true; b.textContent = 'Sending';
     const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
     fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
       $('form').hidden = true; document.querySelector('header').style.display = 'none'; const dn = $('done'); dn.classList.add('on'); window.scrollTo(0, 0);
-      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
-      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will be in touch with the details and payment options.' : 'We have your details and will be in touch soon.';
+      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : ', paying in full') + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
+      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will be in touch with your booking link and payment details.' : 'We have your details and will be in touch soon.';
     }).catch(() => { b.disabled = false; b.textContent = 'Send'; fail('That did not send. Please check your connection and try again.'); });
   };
   sum();
