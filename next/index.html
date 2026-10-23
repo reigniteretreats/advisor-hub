@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Next Experience | Reignite Retreats</title>
+<meta name="description" content="Guest offers from Reignite Retreats: your next FitVenture® experience and a few things to take home.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --gold: #C59F73; --gold-d: #8A6420; --ink: #1A1A1A; --paper: #FAF7F2; --line: #E9DFD1; --mute: #6F6A63; --ok: #2E6B3A; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: Raleway, system-ui, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.45; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  header.hero { position: relative; color: #fff; background: #1A1A1A center/cover; min-height: 300px; display: flex; align-items: flex-end; }
+  header.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,26,26,.25) 0%, rgba(26,26,26,.55) 45%, rgba(26,26,26,.94) 100%); }
+  header.hero .wrap { position: relative; padding-top: 28px; padding-bottom: 26px; width: 100%; }
+  .logo { width: 46px; position: absolute; top: 18px; right: 16px; opacity: .95; }
+  .kick { font-size: 11.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+  h1 { font-size: clamp(30px, 8vw, 44px); line-height: 1.05; margin: 8px 0 10px; font-weight: 800; letter-spacing: -.01em; text-transform: uppercase; }
+  h1 span { color: var(--gold); }
+  .lead { margin: 0; font-size: 15.5px; color: #e9e3db; max-width: 560px; }
+  section { padding: 26px 0 6px; }
+  h2 { font-size: 21px; margin: 0 0 4px; font-weight: 800; text-transform: uppercase; letter-spacing: .01em; }
+  h2 small { display: block; font-size: 11.5px; letter-spacing: .16em; color: var(--gold-d); font-weight: 700; margin-bottom: 4px; }
+  .note { color: var(--mute); font-size: 14px; margin: 0 0 14px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  label.f { display: block; font-size: 13px; font-weight: 700; margin: 0 0 12px; }
+  label.f span.otag { font-weight: 500; color: var(--mute); }
+  .err.on + * {}
+  input[type=text], input[type=tel], input[type=email], textarea, select { display: block; width: 100%; margin-top: 5px; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid #d9cdbb; border-radius: 10px; background: #fff; color: var(--ink); }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
+  textarea { min-height: 86px; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .tab { font: inherit; text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 14px; padding: 0; cursor: pointer; overflow: hidden; color: var(--ink); }
+  .tab .im { height: 74px; background: #ddd center/cover; }
+  .tab .tx { padding: 8px 10px 10px; } .tab b { display: block; font-size: 13.5px; line-height: 1.2; } .tab span { display: block; font-size: 12px; color: var(--mute); margin-top: 2px; }
+  .tab.none .im { background: #efe8de; display: grid; place-items: center; color: var(--mute); font-size: 12px; font-weight: 600; }
+  .tab[aria-pressed=true] { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold) inset; }
+  .ret-info { display: none; margin-bottom: 14px; } .ret-info.on { display: block; }
+  .ret-info .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13.5px; color: var(--mute); margin: 2px 0 12px; } .ret-info .facts b { color: var(--ink); }
+  .rooms { display: grid; gap: 12px; }
+  .room { border: 1.5px solid var(--line); border-radius: 16px; background: #fff; overflow: hidden; }
+  .room .ph { aspect-ratio: 16 / 10; background: #e9e2d8 center/cover; }
+  .room .bd { padding: 12px 14px 14px; }
+  .room h3 { margin: 0; font-size: 17px; font-weight: 800; text-transform: uppercase; color: var(--gold-d); letter-spacing: .02em; }
+  .rsub { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+  .room p { margin: 4px 0 10px; font-size: 13.5px; color: var(--mute); }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opt { font: inherit; border: 1.5px solid var(--line); background: var(--paper); border-radius: 12px; padding: 9px 10px; text-align: left; cursor: pointer; color: var(--ink); }
+  .opt small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+  .opt b { display: block; font-size: 18px; font-weight: 800; } .opt i { font-style: normal; font-size: 11.5px; color: var(--mute); }
+  .opt[aria-pressed=true] { border-color: var(--gold); background: #fbf3e8; box-shadow: 0 0 0 2px var(--gold) inset; }
+  .incl { font-size: 13px; color: var(--mute); margin: 12px 2px 0; }
+  .share { display: none; margin-top: 12px; } .share.on { display: block; }
+  .prods { display: grid; gap: 10px; }
+  .prod { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .prod.on { border-color: var(--gold); }
+  .prod b { font-size: 15.5px; } .prod .d { font-size: 13px; color: var(--mute); margin-top: 2px; }
+  .prod .pr { font-weight: 800; font-size: 16px; margin-top: 4px; } .prod .pr s { color: var(--mute); font-weight: 500; font-size: 13.5px; margin-left: 6px; } .prod .pr em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: #e3f1e4; color: var(--ok); border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; }
+  .step { display: flex; align-items: center; border: 1px solid #d9cdbb; border-radius: 999px; overflow: hidden; background: #fff; }
+  .step button { font: inherit; font-size: 20px; width: 40px; height: 40px; border: 0; background: none; cursor: pointer; color: var(--ink); }
+  .step output { min-width: 26px; text-align: center; font-weight: 700; }
+  .prod select { grid-column: 1 / -1; margin-top: 0; display: none; } .prod.on select { display: block; }
+  .sumbar { position: sticky; bottom: 0; background: rgba(250,247,242,.97); border-top: 1px solid var(--line); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); margin-top: 26px; z-index: 5; backdrop-filter: blur(6px); }
+  .sumbar .wrap { display: flex; gap: 12px; align-items: center; }
+  .sum { flex: 1; min-width: 0; font-size: 13px; color: var(--mute); } .sum b { display: block; color: var(--ink); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .go { font: inherit; font-weight: 800; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; background: var(--gold); color: var(--ink); border: 0; border-radius: 999px; padding: 14px 22px; cursor: pointer; white-space: nowrap; }
+  .go:disabled { opacity: .55; cursor: default; }
+  .err { color: #A8432E; font-size: 13.5px; font-weight: 600; margin: 8px 0 0; display: none; } .err.on { display: block; }
+  .done { display: none; text-align: center; padding: 50px 0 80px; } .done.on { display: block; }
+  .done .tick { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; margin: 0 auto 16px; }
+  .done h2 { font-size: 26px; } .done p { color: var(--mute); max-width: 460px; margin: 8px auto; }
+  footer { text-align: center; font-size: 12px; color: var(--mute); padding: 22px 16px 30px; }
+  @media (max-width: 520px) { .tabs { grid-template-columns: 1fr 1fr; } .tab.none { grid-column: 1 / -1; } .tab.none .im { height: 34px; } .row2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="hero" id="hero">
+  <img class="logo" src="../assets/pdf/logo-white.png" alt="Reignite Retreats">
+  <div class="wrap">
+    <div class="kick" id="kick">A thank you from us</div>
+    <h1>Before you go. <span>Your next chapter.</span></h1>
+    <p class="lead">Book your next experience while you are still here, and take home a few of the things that helped this week. No payment today: we will send your booking details and payment options after you leave.</p>
+  </div>
+</header>
+
+<main id="form">
+  <div class="wrap">
+    <section>
+      <h2><small>Step 1</small>Your details</h2>
+      <p class="note">So we can get your booking and order to you.</p>
+      <div class="card">
+        <label class="f">Full name<input type="text" id="name" autocomplete="name" required></label>
+        <div class="row2">
+          <label class="f">Mobile<input type="tel" id="mobile" autocomplete="tel" inputmode="tel" required></label>
+          <label class="f">Email<input type="email" id="email" autocomplete="email" required></label>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><small>Step 2</small>Your next experience</h2>
+      <p class="note">Pick a date and your room. Every room includes the same complete experience; only your room changes.</p>
+      <div class="tabs" id="tabs"></div>
+      <div id="retBody"></div>
+    </section>
+
+    <section>
+      <h2><small>Step 3</small>Take it home</h2>
+      <p class="note">Guest prices, this week only. We will have them ready for you before you leave.</p>
+      <div class="prods" id="prods"></div>
+    </section>
+
+    <section>
+      <h2><small>Optional</small>Bring someone next time</h2>
+      <p class="note">Know someone who would love this? Leave their details and we will give them a call.</p>
+      <div class="card">
+        <div class="row2">
+          <label class="f">Their name <span class="otag">(optional)</span><input type="text" id="ref_name"></label>
+          <label class="f">Their mobile <span class="otag">(optional)</span><input type="tel" id="ref_mobile" inputmode="tel"></label>
+        </div>
+        <label class="f" style="margin-bottom:0">Anything you would like to ask us <span class="otag">(optional)</span><textarea id="notes"></textarea></label>
+      </div>
+    </section>
+  </div>
+
+  <div class="sumbar">
+    <div class="wrap">
+      <div class="sum"><b id="sumMain">Nothing selected yet</b><span id="sumSub">Choose a retreat, items or both</span></div>
+      <button class="go" id="go" type="button">Send</button>
+    </div>
+    <div class="wrap"><p class="err" id="err"></p></div>
+  </div>
+</main>
+
+<div class="done wrap" id="done">
+  <div class="tick"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <h2>Thank you</h2>
+  <p id="doneTxt">We have your request.</p>
+  <p>Any questions, just ask one of our team before you go.</p>
+</div>
+
+<footer>Reignite Retreats Pty Ltd · WellVenture® and FitVenture® are registered trademarks of Reignite Retreats.</footer>
+
+<script>
+(function () {
+  // Guest offer form (James, 23 Oct 2026). Sends to the same Google Form the hubs use; the Operations hub shows each request under the retreat.
+  const FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSdzeCZuBTGPiivO1RY1Wu71Kwfz4CPEV9hAmyb8sSe_ctPkig/formResponse';
+  const IMG = '../assets/offer/';
+  const RETREATS = [
+    { id: 'fv-noosa-2027-04', key: 'Noosa|2027-04-19', name: 'FitVenture® Noosa', when: '19 to 25 April 2027', short: '19 to 25 Apr 2027', img: '../assets/gx/fitventure.jpg', facts: [['Where', 'Noosa, Sunshine Coast']],
+      rooms: [ { id: 'cottage', name: 'Twin Cottage', desc: 'Share a cottage with a friend or another guest.', opts: [['share', 'Twin share', 4997]] },
+               { id: 'suite', name: 'Suite', desc: 'Your own suite for the week.', opts: [['private', 'Suite', 6497]] } ] },
+    { id: 'fv-samui-2027-08', key: 'Koh Samui|2027-08-22', name: 'FitVenture® Koh Samui', when: '22 to 28 August 2027', short: '22 to 28 Aug 2027', img: '../assets/gx/koh-samui.jpg', facts: [['Starts', '2pm, Sun 22 Aug'], ['Finishes', '12pm, Sat 28 Aug']],
+      rooms: [ { id: 'superior', name: 'Superior', sub: 'Twin share or private', desc: 'A beautifully appointed 30m² room offering comfort, relaxation and the flexibility to enjoy your own private space or share with a companion.', img: 'room-superior.jpg', opts: [['share', 'Twin share', 4997], ['private', 'Private room', 5997]] },
+               { id: 'deluxe', name: 'Deluxe', sub: 'Couple or private', desc: 'A spacious 37m² retreat offering enhanced comfort, thoughtful amenities and the flexibility to enjoy privately or share with a partner.', img: 'room-deluxe.jpg', opts: [['share', 'Couple share', 5297], ['private', 'Private room', 6297]] },
+               { id: 'deluxe-sea-view', name: 'Deluxe Sea-View', sub: 'Couple or private', desc: 'A beautifully appointed 37m² room combining spacious comfort with stunning sea views for an elevated retreat experience.', img: 'room-deluxe-sea-view.jpg', opts: [['share', 'Couple share', 5597], ['private', 'Private room', 6597]] },
+               { id: 'sanctuary-suite', name: 'Sanctuary Suite', sub: 'Couple or private', desc: 'Our most spacious 46m² accommodation, offering exceptional comfort, generous living space and an elevated sense of luxury.', img: 'room-sanctuary-suite.jpg', opts: [['share', 'Couple share', 5997], ['private', 'Private room', 6997]] } ] }
+  ];
+  const PRODUCTS = [
+    { id: 'phytapro', name: 'Phytapro Mat', desc: 'Guest price while you are with us.', price: 112, was: 120 },
+    { id: 'enema', name: 'Enema Kit', desc: 'Guest price while you are with us.', price: 35, was: 55 },
+    { id: 'tshirt', name: 'FitVenture® T-shirt', desc: 'Choose your size.', price: 40, sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] }
+  ];
+  const q = new URLSearchParams(location.search); const FROM = q.get('k') || ''; const CODE = q.get('from') || '';
+  if (q.get('label')) document.getElementById('kick').textContent = q.get('label');
+  const $ = (id) => document.getElementById(id);
+  const mk = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+  const money = (n) => '$' + Number(n).toLocaleString('en-AU');
+  const S = { ret: '', room: '', opt: '', qty: {}, size: {} };
+  $('hero').style.backgroundImage = 'url("' + (/Noosa|Sunshine|F\d/i.test(FROM + CODE) ? '../assets/gx/fitventure.jpg' : '../assets/gx/koh-samui.jpg') + '")';
+
+  // retreats
+  const tabs = $('tabs');
+  RETREATS.concat([{ id: '', name: 'Not right now', short: 'Just the items' }]).forEach((r) => {
+    const b = mk('button', 'tab' + (r.id ? '' : ' none')); b.type = 'button'; b.dataset.id = r.id; const im = mk('div', 'im', r.id ? '' : 'Maybe later'); if (r.img) im.style.backgroundImage = 'url("' + r.img + '")';
+    const tx = mk('div', 'tx'); tx.append(mk('b', null, r.name), mk('span', null, r.short)); b.append(im, tx);
+    b.onclick = () => { S.ret = r.id; S.room = ''; S.opt = ''; drawRet(); sum(); }; tabs.append(b);
+  });
+  function drawRet() {
+    [...tabs.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === S.ret && (S.ret || S._none))));
+    const box = $('retBody'); box.textContent = ''; const R = RETREATS.find((x) => x.id === S.ret); if (!R) return;
+    const inf = mk('div', 'ret-info on'); inf.append(mk('h3', null, R.name + ', ' + R.when)); inf.firstChild.style.cssText = 'margin:0;font-size:18px;font-weight:800';
+    const fc = mk('div', 'facts'); R.facts.forEach(([l, v]) => { const s = mk('span'); s.append(document.createTextNode(l + ': '), mk('b', null, v)); fc.append(s); }); inf.append(fc); box.append(inf);
+    const rl = mk('div', 'rooms'); R.rooms.forEach((rm) => { const c = mk('div', 'room'); if (rm.img) { const ph = mk('div', 'ph'); ph.style.backgroundImage = 'url("' + IMG + rm.img + '")'; c.append(ph); }
+      const bd = mk('div', 'bd'); bd.append(mk('h3', null, rm.name)); if (rm.sub) { const sb = mk('div', 'rsub', rm.sub); bd.append(sb); }
+      bd.append(mk('p', null, rm.desc)); const op = mk('div', 'opts'); if (rm.opts.length === 1) op.style.gridTemplateColumns = '1fr';
+      rm.opts.forEach(([k, l, p]) => { const b = mk('button', 'opt'); b.type = 'button'; b.setAttribute('aria-pressed', String(S.room === rm.id && S.opt === k)); b.append(mk('small', null, l), mk('b', null, 'AU' + money(p)), mk('i', null, 'per person')); b.onclick = () => { S.room = rm.id; S.opt = k; drawRet(); sum(); }; op.append(b); });
+      bd.append(op); c.append(bd); rl.append(c); });
+    box.append(rl);
+    const sh = mk('div', 'card share' + (S.opt === 'share' ? ' on' : '')); const l = mk('label', 'f'); l.style.marginBottom = '0'; l.append(document.createTextNode('Who are you sharing with? '), mk('span', 'otag', '(leave blank and we will pair you with another guest)')); const i = mk('input'); i.type = 'text'; i.id = 'share_with'; i.value = S.share || ''; i.oninput = () => { S.share = i.value; }; l.append(i); sh.append(l); box.append(sh);
+    box.append(mk('p', 'incl', 'All rooms include the same complete experience. Prices are per person. We will confirm availability and send your payment options, including payment plans.'));
+  }
+  tabs.lastChild.onclick = () => { S.ret = ''; S.room = ''; S.opt = ''; S._none = true; drawRet(); sum(); };
+
+  // products
+  const pw = $('prods');
+  PRODUCTS.forEach((p) => { S.qty[p.id] = 0; const c = mk('div', 'prod'); const l = mk('div'); l.append(mk('b', null, p.name), mk('div', 'd', p.desc)); const pr = mk('div', 'pr', money(p.price)); if (p.was) { pr.append(mk('s', null, money(p.was)), mk('em', null, 'Save ' + money(p.was - p.price))); } l.append(pr);
+    const st = mk('div', 'step'); const m = mk('button', null, '−'); m.type = 'button'; m.setAttribute('aria-label', 'One less ' + p.name); const o = mk('output', null, '0'); const pl = mk('button', null, '+'); pl.type = 'button'; pl.setAttribute('aria-label', 'One more ' + p.name);
+    const set = (n) => { S.qty[p.id] = Math.max(0, Math.min(20, n)); o.textContent = S.qty[p.id]; c.classList.toggle('on', S.qty[p.id] > 0); sum(); };
+    m.onclick = () => set(S.qty[p.id] - 1); pl.onclick = () => set(S.qty[p.id] + 1); st.append(m, o, pl); c.append(l, st);
+    if (p.sizes) { const s = document.createElement('select'); s.setAttribute('aria-label', 'T-shirt size'); [['', 'Choose a size']].concat(p.sizes.map((z) => [z, z])).forEach(([v, t]) => { const op = document.createElement('option'); op.value = v; op.textContent = t; s.append(op); }); s.onchange = () => { S.size[p.id] = s.value; }; c.append(s); }
+    pw.append(c); });
+
+  function picked() { const R = RETREATS.find((x) => x.id === S.ret); const rm = R && R.rooms.find((x) => x.id === S.room); const op = rm && rm.opts.find((x) => x[0] === S.opt); const items = PRODUCTS.filter((p) => S.qty[p.id] > 0).map((p) => ({ id: p.id, name: p.name, qty: S.qty[p.id], each: p.price, size: S.size[p.id] || '' })); return { R, rm, op, items, total: items.reduce((t, x) => t + x.qty * x.each, 0) }; }
+  function sum() { const P = picked(); const a = []; if (P.op) a.push(P.R.name.replace('®', '') + ', ' + P.rm.name); if (P.items.length) a.push(P.items.reduce((t, x) => t + x.qty, 0) + (P.items.reduce((t, x) => t + x.qty, 0) === 1 ? ' item' : ' items') + ', ' + money(P.total));
+    $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' per person, ' + P.op[1].toLowerCase() : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
+
+  $('go').onclick = () => {
+    const e = $('err'); e.classList.remove('on'); const P = picked(); const name = $('name').value.trim(), mob = $('mobile').value.trim(), em = $('email').value.trim();
+    const fail = (t, el) => { e.textContent = t; e.classList.add('on'); if (el) el.focus(); };
+    if (!name) return fail('Please add your name.', $('name')); if (!mob && !em) return fail('Please add your mobile or email so we can reach you.', $('mobile'));
+    if (S.ret && !P.op) return fail('Please choose a room for ' + P.R.name + '.');
+    const ts = PRODUCTS.find((p) => p.sizes && S.qty[p.id] > 0 && !S.size[p.id]); if (ts) return fail('Please choose your ' + ts.name + ' size.');
+    if (!P.op && !P.items.length && !$('ref_name').value.trim() && !$('notes').value.trim()) return fail('Choose a retreat, an item or leave us a note first.');
+    const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); const parts = (FROM || 'unknown|0000-00-00').split('|');
+    const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '' } : null,
+      items: P.items, items_total: P.total, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
+    const b = $('go'); b.disabled = true; b.textContent = 'Sending';
+    const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
+    fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
+      $('form').hidden = true; document.querySelector('header').style.display = 'none'; const dn = $('done'); dn.classList.add('on'); window.scrollTo(0, 0);
+      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
+      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will be in touch with the details and payment options.' : 'We have your details and will be in touch soon.';
+    }).catch(() => { b.disabled = false; b.textContent = 'Send'; fail('That did not send. Please check your connection and try again.'); });
+  };
+  sum();
+})();
+</script>
+</body>
+</html>
