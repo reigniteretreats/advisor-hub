@@ -77,6 +77,11 @@
   .err { color: #A8432E; font-size: 13.5px; font-weight: 600; margin: 8px 0 0; display: none; } .err.on { display: block; }
   .done { display: none; text-align: center; padding: 50px 0 80px; } .done.on { display: block; }
   .done .tick { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; margin: 0 auto 16px; }
+  .recap { display: grid; gap: 12px; text-align: left; margin: 18px 0 8px; }
+  .rc { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; } .rc-ph { aspect-ratio: 16 / 7; background: #e9e2d8 center/cover; }
+  .rc-b { padding: 12px 14px 10px; } .rc-t { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-d); margin-bottom: 6px; }
+  .rc-r { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; border-top: 1px solid #f1ebe2; font-size: 14px; } .rc-r:first-of-type { border-top: 0; } .rc-r span { color: var(--mute); } .rc-r b { text-align: right; font-weight: 700; }
+  .rc-r.tot b { font-size: 16px; } .rc-r.q { display: block; } .rc-r.q b { display: block; text-align: left; font-weight: 500; font-style: italic; }
   .done h2 { font-size: 26px; } .done p { color: var(--mute); max-width: 460px; margin: 8px auto; }
   footer { text-align: center; font-size: 12px; color: var(--mute); padding: 22px 16px 30px; }
   @media (max-width: 520px) { .tabs { grid-template-columns: 1fr 1fr; } .tab.none { grid-column: 1 / -1; } .tab.none .im { height: 34px; } .row2 { grid-template-columns: 1fr; } }
@@ -151,6 +156,8 @@
   <div class="tick"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
   <h2>Thank you</h2>
   <p id="doneTxt">We have your request.</p>
+  <div class="recap" id="recap"></div>
+  <p id="doneNext"></p>
   <p>Any questions, just ask one of our team before you go.</p>
 </div>
 
@@ -242,7 +249,7 @@
   $('go').onclick = () => {
     const e = $('err'); e.classList.remove('on'); const P = picked(); const name = $('name').value.trim(), mob = $('mobile').value.trim(), em = $('email').value.trim();
     const fail = (t, el) => { e.textContent = t; e.classList.add('on'); if (el) el.focus(); };
-    if (!name) return fail('Please add your name.', $('name')); if (!mob && !em) return fail('Please add your mobile or email so we can reach you.', $('mobile'));
+    if (!name) return fail('Please add your name.', $('name')); if (!mob) return fail('Please add your mobile.', $('mobile')); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return fail('Please add your email so we can send your confirmation and invoice.', $('email'));
     if (S.ret && !P.op) return fail('Please choose a room for ' + P.R.name + '.');
     if ((P.op || P.items.length) && !S.pay) { $('paySec').scrollIntoView({ behavior: 'smooth', block: 'start' }); return fail('Please choose how you would like to pay.'); }
     const ts = PRODUCTS.find((p) => p.sizes && S.qty[p.id] > 0 && !S.size[p.id]); if (ts) return fail('Please choose your ' + ts.name + ' size.');
@@ -254,8 +261,14 @@
     const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
     fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
       $('form').hidden = true; document.querySelector('header').style.display = 'none'; const dn = $('done'); dn.classList.add('on'); window.scrollTo(0, 0);
-      const t = []; if (P.op) t.push('your place on ' + P.R.name + ', ' + P.R.when + ' (' + P.rm.name + ', ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : '') + ')'); if (P.items.length) t.push(P.items.map((x) => x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : '')).join(', '));
-      $('doneTxt').textContent = t.length ? 'We have your request for ' + t.join(' and ') + '. We will send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for the deposit, with your payment plan dates.' : '.') : 'We have your details and will be in touch soon.';
+      $('doneTxt').textContent = 'Here is what we have for you, ' + name.split(' ')[0] + '.';
+      const rc = $('recap'); const blk = (title, rows, img) => { const c = mk('div', 'rc'); if (img) { const ph = mk('div', 'rc-ph'); ph.style.backgroundImage = 'url("' + img + '")'; c.append(ph); } const bd = mk('div', 'rc-b'); bd.append(mk('div', 'rc-t', title)); rows.forEach(([l, v, cls]) => { const r = mk('div', 'rc-r' + (cls ? ' ' + cls : '')); r.append(mk('span', null, l), mk('b', null, v)); bd.append(r); }); c.append(bd); rc.append(c); };
+      if (P.op) { const R_ = [['Retreat', P.R.name], ['Dates', P.R.when], ['Room', P.rm.name], ['Option', P.op[1]], ['Price', 'AU' + money(P.op[2]) + ' per person']]; if (S.opt === 'share' && S.share) R_.push(['Sharing with', S.share]); blk('Your next experience', R_, P.rm.img ? IMG + P.rm.img : P.R.img); }
+      if (P.items.length) blk('Take-home items', P.items.map((x) => [x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : ''), money(x.qty * x.each)]).concat([['Total', money(P.total), 'tot']]));
+      if (S.pay) { const pl = P.op && S.pay === 'plan' ? planOf(P.op[2]) : null; const R_ = [['Method', { card: 'Credit card', bank: 'Bank transfer', plan: 'Payment plan' }[S.pay]]]; if (pl) R_.push(['Deposit', money(pl.upfront)], ['Then', pl.n + ' × ' + cents(pl.each)], ['Plan fee', '$' + pl.fee], ['Total', money(pl.total) + ' per person', 'tot']); blk('How you would like to pay', R_); }
+      const rf = $('ref_name').value.trim(); if (rf) blk('Your referral', [['Name', rf]].concat($('ref_mobile').value.trim() ? [['Mobile', $('ref_mobile').value.trim()]] : []));
+      const nt = $('notes').value.trim(); if (nt) blk('Your question', [['', nt, 'q']]);
+      $('doneNext').textContent = (P.op || P.items.length ? 'Nothing has been charged. We will be in touch shortly to confirm everything and send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for your deposit, with your payment plan dates.' : '.') : 'We will be in touch soon.') + (em ? ' A copy is on its way to ' + em + '.' : '');
     }).catch(() => { b.disabled = false; b.textContent = 'Send'; fail('That did not send. Please check your connection and try again.'); });
   };
   sum();
