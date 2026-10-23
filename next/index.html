@@ -77,6 +77,8 @@
   .err { color: #A8432E; font-size: 13.5px; font-weight: 600; margin: 8px 0 0; display: none; } .err.on { display: block; }
   .done { display: none; text-align: center; padding: 50px 0 80px; } .done.on { display: block; }
   .done .tick { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; margin: 0 auto 16px; }
+  .perk { display: none; } .perk.on, .perk:not(:empty) { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; background: #fbf3e8; border: 1.5px dashed var(--gold); border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; }
+  .perk.on { border-style: solid; background: #f6ead8; } .perk-im { width: 64px; height: 64px; border-radius: 10px; background: #ddd center/cover; } .perk b { display: block; font-size: 14.5px; } .perk span { display: block; font-size: 13px; color: var(--mute); margin-top: 2px; }
   .recap { display: grid; gap: 12px; text-align: left; margin: 18px 0 8px; }
   .rc { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; } .rc-ph { aspect-ratio: 16 / 7; background: #e9e2d8 center/cover; }
   .rc-b { padding: 12px 14px 10px; } .rc-t { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-d); margin-bottom: 6px; }
@@ -138,6 +140,7 @@
     <section id="paySec">
       <h2><small>Last step</small>How would you like to pay?</h2>
       <p class="note">Nothing is charged today. We will send your invoice with the details for the option you choose. Your place and guest prices are held for 7 days from your invoice: to lock them in, we just need your payment (or deposit) within those 7 days.</p>
+      <div class="perk" id="perk"></div>
       <div class="pays" id="pays"></div>
       <p class="incl" id="planTxt"></p>
     </section>
@@ -230,6 +233,9 @@
 
 
   // how they pay (James, 23 Oct 2026): card, bank transfer or the payment plan; we send an invoice either way
+  // pay in full before you leave and the Phytapro Mat is free (James, 23 Oct 2026)
+  const PERK = { id: 'phytapro', name: 'Phytapro Mat', worth: 120 };
+  const perkOn = (P) => !!(P.op && (S.pay === 'card' || S.pay === 'bank'));
   const PAYS = [['card', 'Credit card', 'We send a secure card payment link with your invoice', '<path d="M3 6.5h18v11H3z"/><path d="M3 10h18"/><path d="M6.5 14.5h4"/>'],
     ['bank', 'Bank transfer', 'Our bank details are on your invoice', '<path d="M3 10l9-5 9 5"/><path d="M5 10v7M9.5 10v7M14.5 10v7M19 10v7"/><path d="M3 20h18"/>'],
     ['plan', 'Payment plan', '', '<path d="M4 6h16v14H4z"/><path d="M4 10h16"/><path d="M8 4v4M16 4v4"/><path d="M8 14h2M12 14h2M8 17h2"/>']];
@@ -239,6 +245,7 @@
       const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('width', '24'); sv.setAttribute('height', '24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', '#8A6420'); sv.setAttribute('stroke-width', '1.7'); sv.setAttribute('stroke-linecap', 'round'); sv.setAttribute('stroke-linejoin', 'round'); sv.innerHTML = ic;
       const pl = k === 'plan' ? planOf(P.op[2]) : null; b.append(sv, mk('b', null, l), mk('i', null, pl ? money(pl.upfront) + ' deposit, then ' + pl.n + ' × ' + cents(pl.each) : d));
       b.onclick = () => { S.pay = k; drawPay(); sum(); }; w.append(b); });
+    { const pk = $('perk'); pk.textContent = ''; if (P.op) { const on = perkOn(P); pk.className = 'perk' + (on ? ' on' : ''); const im = mk('div', 'perk-im'); im.style.backgroundImage = 'url("' + IMG + 'phytapro-mat.jpg")'; const tx = mk('div'); tx.append(mk('b', null, on ? 'Your free Phytapro Mat is included' : 'Pay in full before you leave: Phytapro Mat free'), mk('span', null, on ? 'Pay your invoice in full before you leave and the mat (worth $' + PERK.worth + ') is yours, our gift.' : 'Pay for your retreat in full by card or bank transfer before you leave and we will give you a Phytapro Mat (worth $' + PERK.worth + ').')); pk.append(im, tx); } else pk.className = 'perk'; }
     const t = $('planTxt'); if (S.pay === 'plan' && P.op) { const pl = planOf(P.op[2]); t.textContent = 'Payment plan for your retreat: ' + money(pl.upfront) + ' deposit to secure your place, then the balance of ' + cents(P.op[2] - pl.upfront) + ' in ' + pl.n + ' instalments of ' + cents(pl.each) + ', plus a one-off $' + pl.fee + ' payment plan fee (total ' + money(pl.total) + ' per person).' + (P.items.length ? ' Your take-home items are paid by card or bank transfer on the same invoice.' : ''); } else t.textContent = '';
     $('paySec').style.display = P.op || P.items.length ? '' : 'none';
   }
@@ -256,7 +263,7 @@
     if (!P.op && !P.items.length && !$('ref_name').value.trim() && !$('notes').value.trim()) return fail('Choose a retreat, an item or leave us a note first.');
     const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); const parts = (FROM || 'unknown|0000-00-00').split('|');
     const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '', pay: S.pay, plan: S.pay === 'plan' ? planOf(P.op[2]) : null } : null, pay: S.pay,
-      items: P.items, items_total: P.total, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
+      items: P.items, items_total: P.total, perk: perkOn(P) ? { id: PERK.id, name: PERK.name, worth: PERK.worth, condition: 'paid in full before leaving' } : null, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
     const b = $('go'); b.disabled = true; b.textContent = 'Sending';
     const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
     fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
@@ -265,7 +272,7 @@
       const rc = $('recap'); const blk = (title, rows, img) => { const c = mk('div', 'rc'); if (img) { const ph = mk('div', 'rc-ph'); ph.style.backgroundImage = 'url("' + img + '")'; c.append(ph); } const bd = mk('div', 'rc-b'); bd.append(mk('div', 'rc-t', title)); rows.forEach(([l, v, cls]) => { const r = mk('div', 'rc-r' + (cls ? ' ' + cls : '')); r.append(mk('span', null, l), mk('b', null, v)); bd.append(r); }); c.append(bd); rc.append(c); };
       if (P.op) { const R_ = [['Retreat', P.R.name], ['Dates', P.R.when], ['Room', P.rm.name], ['Option', P.op[1]], ['Price', 'AU' + money(P.op[2]) + ' per person']]; if (S.opt === 'share' && S.share) R_.push(['Sharing with', S.share]); blk('Your next experience', R_, P.rm.img ? IMG + P.rm.img : P.R.img); }
       if (P.items.length) blk('Take-home items', P.items.map((x) => [x.qty + ' × ' + x.name + (x.size ? ' (' + x.size + ')' : ''), money(x.qty * x.each)]).concat([['Total', money(P.total), 'tot']]));
-      if (S.pay) { const pl = P.op && S.pay === 'plan' ? planOf(P.op[2]) : null; const R_ = [['Method', { card: 'Credit card', bank: 'Bank transfer', plan: 'Payment plan' }[S.pay]]]; if (pl) R_.push(['Deposit', money(pl.upfront)], ['Then', pl.n + ' × ' + cents(pl.each)], ['Plan fee', '$' + pl.fee], ['Total', money(pl.total) + ' per person', 'tot']); blk('How you would like to pay', R_); }
+      if (S.pay) { const pl = P.op && S.pay === 'plan' ? planOf(P.op[2]) : null; const R_ = [['Method', { card: 'Credit card', bank: 'Bank transfer', plan: 'Payment plan' }[S.pay]]]; if (perkOn(P)) R_.push(['Your gift', 'Free Phytapro Mat when paid in full before you leave']); if (pl) R_.push(['Deposit', money(pl.upfront)], ['Then', pl.n + ' × ' + cents(pl.each)], ['Plan fee', '$' + pl.fee], ['Total', money(pl.total) + ' per person', 'tot']); blk('How you would like to pay', R_); }
       const rf = $('ref_name').value.trim(); if (rf) blk('Your referral', [['Name', rf]].concat($('ref_mobile').value.trim() ? [['Mobile', $('ref_mobile').value.trim()]] : []));
       const nt = $('notes').value.trim(); if (nt) blk('Your question', [['', nt, 'q']]);
       $('doneNext').textContent = (P.op || P.items.length ? 'Nothing has been charged. We will be in touch shortly to confirm everything and send your invoice' + (S.pay === 'card' ? ' with a secure card payment link.' : S.pay === 'bank' ? ' with our bank details.' : S.pay === 'plan' ? ' for your deposit, with your payment plan dates.' : '.') + ' Your place and guest prices are held for 7 days from your invoice, so we just need your ' + (S.pay === 'plan' ? 'deposit' : 'payment') + ' within those 7 days.' : 'We will be in touch soon.') + (em ? ' A copy is on its way to ' + em + '.' : '');
