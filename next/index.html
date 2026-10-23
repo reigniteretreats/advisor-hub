@@ -61,8 +61,9 @@
   .prods { display: grid; gap: 10px; }
   .prod { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; }
   .prod.on { border-color: var(--gold); }
+  .prod.wimg { grid-template-columns: 72px 1fr auto; } .pimg { width: 72px; height: 90px; border-radius: 10px; background: #eee center/cover; } .prod.wimg select { grid-column: 1 / -1; }
   .prod b { font-size: 15.5px; } .prod .d { font-size: 13px; color: var(--mute); margin-top: 2px; }
-  .prod .pr { font-weight: 800; font-size: 16px; margin-top: 4px; } .prod .pr s { color: var(--mute); font-weight: 500; font-size: 13.5px; margin-left: 6px; } .prod .pr em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: #e3f1e4; color: var(--ok); border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; }
+  .prod .pr { font-weight: 800; font-size: 16px; margin-top: 4px; } .prod .pr s { color: var(--mute); font-weight: 500; font-size: 13.5px; margin-left: 6px; } .prod .pr em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: #e3f1e4; color: var(--ok); border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; display: inline-block; }
   .step { display: flex; align-items: center; border: 1px solid #d9cdbb; border-radius: 999px; overflow: hidden; background: #fff; }
   .step button { font: inherit; font-size: 20px; width: 40px; height: 40px; border: 0; background: none; cursor: pointer; color: var(--ink); }
   .step output { min-width: 26px; text-align: center; font-weight: 700; }
@@ -155,16 +156,16 @@
   const IMG = '../assets/offer/';
   const RETREATS = [
     { id: 'fv-noosa-2027-04', key: 'Noosa|2027-04-19', name: 'FitVenture® Noosa', when: '19 to 25 April 2027', short: '19 to 25 Apr 2027', img: IMG + 'fitventure-hero.jpg', facts: [['Where', 'Noosa, Sunshine Coast']],
-      rooms: [ { id: 'cottage', name: 'Twin Cottage', desc: 'Share a cottage with a friend or another guest.', opts: [['share', 'Twin share', 4997]] },
-               { id: 'suite', name: 'Suite', desc: 'Your own suite for the week.', opts: [['private', 'Suite', 6497]] } ] },
-    { id: 'fv-samui-2027-08', key: 'Koh Samui|2027-08-22', name: 'FitVenture® Koh Samui', when: '22 to 28 August 2027', short: '22 to 28 Aug 2027', img: '../assets/gx/koh-samui.jpg', facts: [['Starts', '2pm, Sun 22 Aug'], ['Finishes', '12pm, Sat 28 Aug']],
+      rooms: [ { id: 'cottage', name: 'Twin Cottage', desc: 'Share a cottage with a friend or another guest.', img: 'room-noosa-cottage.jpg', opts: [['share', 'Twin share', 4997]] },
+               { id: 'suite', name: 'Suite', desc: 'Your own suite for the week.', img: 'room-noosa-suite.jpg', opts: [['private', 'Suite', 6497]] } ] },
+    { id: 'fv-samui-2027-08', key: 'Koh Samui|2027-08-22', name: 'FitVenture® Koh Samui', when: '22 to 28 August 2027', short: '22 to 28 Aug 2027', img: IMG + 'fitventure-samui.jpg', facts: [['Starts', '2pm, Sun 22 Aug'], ['Finishes', '12pm, Sat 28 Aug']],
       rooms: [ { id: 'superior', name: 'Superior', sub: 'Twin share or private', desc: 'A beautifully appointed 30m² room offering comfort, relaxation and the flexibility to enjoy your own private space or share with a companion.', img: 'room-superior.jpg', opts: [['share', 'Twin share', 4997], ['private', 'Private room', 5997]] },
                { id: 'deluxe', name: 'Deluxe', sub: 'Couple or private', desc: 'A spacious 37m² retreat offering enhanced comfort, thoughtful amenities and the flexibility to enjoy privately or share with a partner.', img: 'room-deluxe.jpg', opts: [['share', 'Couple share', 5297], ['private', 'Private room', 6297]] },
                { id: 'deluxe-sea-view', name: 'Deluxe Sea-View', sub: 'Couple or private', desc: 'A beautifully appointed 37m² room combining spacious comfort with stunning sea views for an elevated retreat experience.', img: 'room-deluxe-sea-view.jpg', opts: [['share', 'Couple share', 5597], ['private', 'Private room', 6597]] },
                { id: 'sanctuary-suite', name: 'Sanctuary Suite', sub: 'Couple or private', desc: 'Our most spacious 46m² accommodation, offering exceptional comfort, generous living space and an elevated sense of luxury.', img: 'room-sanctuary-suite.jpg', opts: [['share', 'Couple share', 5997], ['private', 'Private room', 6997]] } ] }
   ];
   const PRODUCTS = [
-    { id: 'phytapro', name: 'Phytapro Mat', desc: 'Guest price while you are with us.', price: 112, was: 120 },
+    { id: 'phytapro', img: 'phytapro-mat.jpg', name: 'Phytapro Mat', desc: 'Guest price while you are with us.', price: 112, was: 120 },
     { id: 'enema', name: 'Enema Kit', desc: 'Guest price while you are with us.', price: 35, was: 55 },
     { id: 'tshirt', name: 'FitVenture® T-shirt', desc: 'Choose your size.', price: 40, sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] }
   ];
@@ -179,7 +180,7 @@
   const cents = (n) => '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const planOf = (price) => { const bal = price - PLAN.upfront; return { upfront: PLAN.upfront, each: Math.round(bal / PLAN.n * 100) / 100, n: PLAN.n, fee: PLAN.fee, total: price + PLAN.fee }; };
   const FV = /Noosa|Sunshine|^F\d/i.test(FROM + ' ' + CODE) || /^F\d/.test(CODE);
-  $('hero').style.backgroundImage = 'url("' + (FV ? IMG + 'fitventure-hero.jpg' : '../assets/gx/koh-samui.jpg') + '")'; if (FV) { $('logo').src = IMG + 'f-logo-white.png'; $('logo').alt = 'FitVenture'; }
+  $('hero').style.backgroundImage = 'url("' + (FV ? IMG + 'fitventure-hero.jpg' : '../assets/gx/koh-samui.jpg') + '")'; if (FV) { $('logo').src = IMG + 'f-logo-white.svg'; $('logo').alt = 'FitVenture'; }
 
   // retreats
   const tabs = $('tabs');
@@ -213,7 +214,7 @@
 
   // products
   const pw = $('prods');
-  PRODUCTS.forEach((p) => { S.qty[p.id] = 0; const c = mk('div', 'prod'); const l = mk('div'); l.append(mk('b', null, p.name), mk('div', 'd', p.desc)); const pr = mk('div', 'pr', money(p.price)); if (p.was) { pr.append(mk('s', null, money(p.was)), mk('em', null, 'Save ' + money(p.was - p.price))); } l.append(pr);
+  PRODUCTS.forEach((p) => { S.qty[p.id] = 0; const c = mk('div', 'prod' + (p.img ? ' wimg' : '')); if (p.img) { const pi = mk('div', 'pimg'); pi.style.backgroundImage = 'url("' + IMG + p.img + '")'; c.append(pi); } const l = mk('div'); l.append(mk('b', null, p.name), mk('div', 'd', p.desc)); const pr = mk('div', 'pr', money(p.price)); if (p.was) { pr.append(mk('s', null, money(p.was)), mk('em', null, 'Save ' + money(p.was - p.price))); } l.append(pr);
     const st = mk('div', 'step'); const m = mk('button', null, '−'); m.type = 'button'; m.setAttribute('aria-label', 'One less ' + p.name); const o = mk('output', null, '0'); const pl = mk('button', null, '+'); pl.type = 'button'; pl.setAttribute('aria-label', 'One more ' + p.name);
     const set = (n) => { S.qty[p.id] = Math.max(0, Math.min(20, n)); o.textContent = S.qty[p.id]; c.classList.toggle('on', S.qty[p.id] > 0); sum(); };
     m.onclick = () => set(S.qty[p.id] - 1); pl.onclick = () => set(S.qty[p.id] + 1); st.append(m, o, pl); c.append(l, st);
