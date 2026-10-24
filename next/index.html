@@ -30,6 +30,7 @@
   .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
   label.f { display: block; font-size: 13px; font-weight: 700; margin: 0 0 12px; }
   label.f span.otag { font-weight: 500; color: var(--mute); }
+  .row3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0 12px; } @media (max-width: 560px) { .row3 { grid-template-columns: 1fr 1fr; } .row3 label:first-child { grid-column: 1 / -1; } }
   .err.on + * {}
   input[type=text], input[type=tel], input[type=email], textarea, select { display: block; width: 100%; margin-top: 5px; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid #d9cdbb; border-radius: 10px; background: #fff; color: var(--ink); }
   input:focus, textarea:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
@@ -110,6 +111,13 @@
           <label class="f">Mobile<input type="tel" id="mobile" autocomplete="tel" inputmode="tel" required></label>
           <label class="f">Email<input type="email" id="email" autocomplete="email" required></label>
         </div>
+        <label class="f">Postal address <span class="otag">(so we can post anything we can't hand you before you leave)</span><input type="text" id="a_street" autocomplete="address-line1" placeholder="Street address"></label>
+        <div class="row3">
+          <label class="f">Suburb or town<input type="text" id="a_suburb" autocomplete="address-level2"></label>
+          <label class="f">State<input type="text" id="a_state" autocomplete="address-level1"></label>
+          <label class="f">Postcode<input type="text" id="a_postcode" autocomplete="postal-code" inputmode="numeric"></label>
+        </div>
+        <label class="f" style="margin-bottom:0">Country<input type="text" id="a_country" autocomplete="country-name" value="Australia"></label>
       </div>
     </section>
 
@@ -262,8 +270,10 @@ function __boot() {
     $('sumMain').textContent = a.length ? a.join(' · ') : 'Nothing selected yet'; $('sumSub').textContent = P.op ? 'AU' + money(P.op[2]) + ' pp, ' + P.op[1].toLowerCase() + (S.pay === 'plan' ? ', payment plan' : S.pay === 'card' ? ', credit card' : S.pay === 'bank' ? ', bank transfer' : '') : P.R ? 'Now choose your room' : 'Choose a retreat, items or both'; }
 
   $('go').onclick = () => {
+  const ADDR = () => { const g = (k) => ($('a_' + k).value || '').trim(); const A = { street: g('street'), suburb: g('suburb'), state: g('state'), postcode: g('postcode'), country: g('country') || 'Australia' }; return A.street || A.suburb || A.postcode ? A : null; };
     const e = $('err'); e.classList.remove('on'); const P = picked(); const name = $('name').value.trim(), mob = $('mobile').value.trim(), em = $('email').value.trim();
     const fail = (t, el) => { e.textContent = t; e.classList.add('on'); if (el) el.focus(); };
+    const A_ = ADDR(); if (P.items && P.items.length && (!A_ || !A_.street || !A_.suburb || !A_.postcode)) return fail('Please add your postal address, in case we need to post your items to you.', $('a_street'));
     if (!name) return fail('Please add your name.', $('name')); if (!mob) return fail('Please add your mobile.', $('mobile')); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return fail('Please add your email so we can send your confirmation and invoice.', $('email'));
     if (S.ret && !P.op) return fail('Please choose a room for ' + P.R.name + '.');
     if ((P.op || P.items.length) && !S.pay) { $('paySec').scrollIntoView({ behavior: 'smooth', block: 'start' }); return fail('Please choose how you would like to pay.'); }
@@ -271,7 +281,7 @@ function __boot() {
     if (!P.op && !P.items.length && !$('ref_name').value.trim() && !$('notes').value.trim()) return fail('Choose a retreat, an item or leave us a note first.');
     const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); const parts = (FROM || 'unknown|0000-00-00').split('|');
     const d = { name, mobile: mob, email: em, from: FROM, code: CODE, at: new Date().toISOString(), retreat: P.op ? { id: P.R.id, key: P.R.key, name: P.R.name, when: P.R.when, room: P.rm.name, option: P.op[1], price: P.op[2], share_with: S.opt === 'share' ? (S.share || '') : '', pay: S.pay, plan: S.pay === 'plan' ? planOf(P.op[2]) : null } : null, pay: S.pay,
-      items: P.items, items_total: P.total, perk: perkOn(P) ? { id: PERK.id || '', name: PERK.name, worth: PERK.worth, condition: 'paid in full before leaving' } : null, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
+      items: P.items, items_total: P.total, addr: ADDR(), perk: perkOn(P) ? { id: PERK.id || '', name: PERK.name, worth: PERK.worth, condition: 'paid in full before leaving' } : null, ref_name: $('ref_name').value.trim(), ref_mobile: $('ref_mobile').value.trim(), notes: $('notes').value.trim() };
     const b = $('go'); b.disabled = true; b.textContent = 'Sending';
     const body = new URLSearchParams({ 'entry.1768653814': 'ups|' + parts[0] + '|' + parts[1] + '|' + id, 'entry.2045267243': JSON.stringify(d), 'entry.1462166127': String(P.total), 'entry.1663245432': name, 'entry.490711991': 'ups' });
     fetch(FORM, { method: 'POST', mode: 'no-cors', body }).then(() => {
